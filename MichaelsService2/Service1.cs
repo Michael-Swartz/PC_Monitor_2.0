@@ -96,6 +96,8 @@ namespace MichaelsService2
             computer.Accept(updateVisitor);
             string cput = "0";
             string cpuu = "0";
+            string gput = "1";
+            string gpuu = "1";
 
             for (int i = 0; i < computer.Hardware.Length; i++)
             {
@@ -135,29 +137,29 @@ namespace MichaelsService2
                         {
 
                             // Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                            // cput = computer.Hardware[i].Sensors[j].Value.ToString();
+                            gput = computer.Hardware[i].Sensors[j].Value.ToString();
                         }
 
                         //GET CPU UTILIZATION
                         if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Load)
                         {
 
-                            if (computer.Hardware[i].Sensors[j].Name == "CPU Total")
-                            {
+                           // if (computer.Hardware[i].Sensors[j].Name == "GPU Core")
+                           // {
                                 //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                                // cpuu = computer.Hardware[i].Sensors[j].Value.ToString();
+                            gpuu = computer.Hardware[i].Sensors[j].Value.ToString();
 
-                            }
+                           // }
                         }
                     }
                 }
             }
 
-            string cputotal = cput + cpuu;
+            string packet_pre = "CPU: " + cput + ":" + cpuu + "GPU: " + gput + ":" + gpuu;
 
             computer.Close();
 
-            string packet_data = cputotal;
+            string packet_data = packet_pre;
             byte[] sendbuff = Encoding.ASCII.GetBytes(packet_data);
             IPEndPoint ep = new IPEndPoint(broadcast, 6666);
             s.SendTo(sendbuff, ep);
@@ -167,7 +169,7 @@ namespace MichaelsService2
             //string packet_data = GetRandomNumber(0, 234957675).ToString();
 
         }
-        //private static readonly Random getrandom = new Random();
+        private static readonly Random getrandom = new Random();
 
         public static int GetRandomNumber(int min, int max)
         {

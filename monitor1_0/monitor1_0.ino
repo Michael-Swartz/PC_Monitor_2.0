@@ -5,10 +5,7 @@
 #include <WiFiManager.h>
 
 
-
 WiFiServer server(80);
-//const char ssid[] = "Michael's Wifi";
-//const char pass[] = "mustangsallys";
 const int button = 16;
 WiFiUDP Udp;
 unsigned int localUdpPort = 6666;
@@ -19,8 +16,6 @@ int lcdColumns = 16;
 int lcdRows = 2;
 
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
-
-
 
 void configModeCallback(WiFiManager *myWifiManager) {
   lcd.clear();
@@ -64,15 +59,11 @@ void setup()
   }
   
 
-wifiManager.setAPCallback(configModeCallback);
-  
+wifiManager.setAPCallback(configModeCallback);  
 wifiManager.autoConnect("PC Monitor");
 
 
 
-
-
- 
   lcd.clear();
   lcd.print("Connected to");
   lcd.setCursor(0,1);
@@ -133,7 +124,6 @@ void loop()
     lcd.setCursor(12,0);
     lcd.print(String(cpuu));
     Serial.printf("SENT PACKET");
-
   } 
   
 }

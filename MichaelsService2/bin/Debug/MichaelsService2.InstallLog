@@ -1,0 +1,13 @@
+﻿Installing assembly 'E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.InstallLog
+   assemblypath = E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe
+Installing service Service1...
+Service Service1 has been successfully installed.
+Creating EventLog source Service1 in log Application...
+Committing assembly 'E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.InstallLog
+   assemblypath = E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe

@@ -1,0 +1,18 @@
+E:\Programming Stuff\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe.config
+E:\Programming Stuff\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe
+E:\Programming Stuff\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.pdb
+E:\Programming Stuff\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.csprojAssemblyReference.cache
+E:\Programming Stuff\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.ProjectInstaller.resources
+E:\Programming Stuff\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.csproj.GenerateResource.cache
+E:\Programming Stuff\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.exe
+E:\Programming Stuff\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.pdb
+E:\Programming\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.ProjectInstaller.resources
+E:\Programming\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.csproj.GenerateResource.cache
+E:\Programming\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.exe
+E:\Programming\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.pdb
+E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe.config
+E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe
+E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.pdb
+E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\OpenHardwareMonitorLib.dll
+E:\Programming\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.csproj.CopyComplete
+E:\Programming\MichaelsService2\MichaelsService2\obj\Debug\MichaelsService2.csprojAssemblyReference.cache

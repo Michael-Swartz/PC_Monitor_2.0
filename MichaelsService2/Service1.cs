@@ -24,7 +24,6 @@ namespace MichaelsService2
             InitializeComponent();
         }
 
-
         public class UpdateVisitor : IVisitor 
         {
             public void VisitComputer(IComputer computer)
@@ -81,10 +80,7 @@ namespace MichaelsService2
                 string new_input = "   ";
                 return new_input;
             }
-
-
         }
-
 
         private void OnElapsedTime(object source, ElapsedEventArgs e)
         {
@@ -123,16 +119,9 @@ namespace MichaelsService2
                         if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Load)
                         {
 
-
-                                //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                               
+                            //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
                             cpuu = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
-                               
-
-
-                               
-
-                            
+                                                                         
                         }
                     }
                 }
@@ -162,9 +151,6 @@ namespace MichaelsService2
                         }
                     }
                 }
-
-
-
             }
 
             string cputotal = cput + cpuu;
@@ -178,16 +164,10 @@ namespace MichaelsService2
             //Random rnd = new Random();
             //int num = rnd.Next();
             // WriteToFile("Sent packet " + packet_data);
-
             //string packet_data = GetRandomNumber(0, 234957675).ToString();
 
-
-
-
         }
-
-
-        private static readonly Random getrandom = new Random();
+        //private static readonly Random getrandom = new Random();
 
         public static int GetRandomNumber(int min, int max)
         {
@@ -196,8 +176,6 @@ namespace MichaelsService2
                 return getrandom.Next(min, max);
             }
         }
-
-
 
 
         public void WriteToFile(string Message)

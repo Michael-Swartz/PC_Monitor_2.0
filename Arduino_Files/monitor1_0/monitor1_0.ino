@@ -17,6 +17,20 @@ int lcdRows = 2;
 
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 
+byte thermom[8] = 
+{
+  B00100,
+  B01010,
+  B01010,
+  B01110,
+  B01110,
+  B11111,
+  B11111,
+  B01110
+};
+
+
+
 void configModeCallback(WiFiManager *myWifiManager) {
   lcd.clear();
   lcd.setCursor(0,0);
@@ -31,8 +45,14 @@ void setup()
   
   bool fresh_boot = false; 
   lcd.init();
+  //lcd.begin(20,4);
   lcd.backlight();
   lcd.setCursor(0,0);
+  lcd.clear();
+  lcd.createChar(1,thermom);
+
+
+  
   Serial.begin(115200);
   Serial.print("ON");
   Serial.println();
@@ -84,8 +104,10 @@ wifiManager.autoConnect("PC Monitor");
   lcd.clear();
   Udp.begin(localUdpPort);
   Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), localUdpPort);
-  lcd.setCursor(0,0);
-  lcd.print("CPU T:    U:");
+  //lcd.setCursor(0,0);
+  //lcd.print("CPU       U:"); //char(252) is temperature symbol
+  lcd.setCursor(6,0);
+  lcd.write(byte(1));
   lcd.setCursor(0,1);
   lcd.print("GPU T:");
 }

@@ -7,3 +7,4 @@ E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.exe
 E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\MichaelsService2.pdb
 E:\Programming\MichaelsService2\MichaelsService2\bin\Debug\OpenHardwareMonitorLib.dll
 E:\Programming\MichaelsService2\MichaelsService2\obj\Debug\PCMonitor.csproj.CopyComplete
+E:\Programming\MichaelsService2\MichaelsService2\obj\Debug\PCMonitor.csprojAssemblyReference.cache

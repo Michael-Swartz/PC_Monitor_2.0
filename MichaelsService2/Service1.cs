@@ -47,7 +47,7 @@ namespace MichaelsService2
             WriteToFile("Service is Started at " + DateTime.Now);
             
             timer.Elapsed += new ElapsedEventHandler(OnElapsedTime);
-            timer.Interval += 1500;
+            timer.Interval += 750;
             timer.Enabled = true;
         }
 
@@ -101,6 +101,8 @@ namespace MichaelsService2
             string gput = "0";
             string gpuu = "0";
 
+            // Old way below
+            /**
             for (int i = 0; i < computer.Hardware.Length; i++)
             {
                 //GET CPU TEMP AND UTILIZATION 
@@ -125,7 +127,7 @@ namespace MichaelsService2
                             if (computer.Hardware[i].Sensors[j].Name == "CPU Total")
                             {
                                 //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                                cpuu = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
+                                cpuu = format_string(computer.Hardware[i].Sensors[j].Value.GetValueOrDefault());
                             }                                            
                         }
                     }
@@ -158,6 +160,61 @@ namespace MichaelsService2
                 }
 
             }
+            **/
+
+            foreach (var hardware in computer.Hardware)
+            {
+                if (hardware.HardwareType == HardwareType.CPU)
+                {
+                    hardware.Update();
+                    foreach (var sensors in hardware.Sensors)
+                    {
+                        if (sensors.SensorType == SensorType.Load)
+                        {
+                            if (sensors.Name == "CPU Total")
+                            {
+                                // Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                cpuu = format_string(sensors.Value.ToString());
+                            }
+                        }
+
+                        if (sensors.SensorType == SensorType.Temperature)
+                        {
+                            if (sensors.Name == "CPU Package")
+                            {
+                                // Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                cput = format_string(sensors.Value.ToString());
+                            }
+                        }
+                    }
+                }
+
+                if (hardware.HardwareType == HardwareType.GpuNvidia)
+                {
+                    hardware.Update();
+                    foreach (var sensors in hardware.Sensors)
+                    {
+                        if (sensors.SensorType == SensorType.Load)
+                        {
+                            if (sensors.Name == "GPU Core")
+                            {
+                                // Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                gpuu = format_string(sensors.Value.ToString());
+                            }
+                        }
+
+                        if (sensors.SensorType == SensorType.Temperature)
+                        {
+                            if (sensors.Name == "GPU Core")
+                            {
+                                //Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                gput = format_string(sensors.Value.ToString());
+                            }
+                        }
+                    }
+                }
+            }
+
 
             string packet_pre = cput + cpuu + gput + gpuu;
 

@@ -56,6 +56,7 @@ namespace MichaelsService2
             WriteToFile("Service is stopped at " + DateTime.Now);
         }
 
+        //This function formats the output from sensors into three digit chucks which are combined and sent in a packet to the Arduino. 
         public static string format_string(string input)
         {
             if (input.Length == 3)
@@ -71,7 +72,7 @@ namespace MichaelsService2
 
             if (input.Length == 1)
             {
-                string new_input = " " + input;
+                string new_input = "  " + input;
                 return new_input;
             }
 
@@ -93,11 +94,12 @@ namespace MichaelsService2
             Computer computer = new Computer();
             computer.Open();
             computer.CPUEnabled = true;
+            computer.GPUEnabled = true;
             computer.Accept(updateVisitor);
             string cput = "0";
             string cpuu = "0";
-            string gput = "1";
-            string gpuu = "1";
+            string gput = "0";
+            string gpuu = "0";
 
             for (int i = 0; i < computer.Hardware.Length; i++)
             {
@@ -120,10 +122,11 @@ namespace MichaelsService2
                         //GET CPU UTILIZATION
                         if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Load)
                         {
-
-                            //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                            cpuu = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
-                                                                         
+                            if (computer.Hardware[i].Sensors[j].Name == "CPU Total")
+                            {
+                                //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
+                                cpuu = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
+                            }                                            
                         }
                     }
                 }
@@ -136,26 +139,27 @@ namespace MichaelsService2
                         if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Temperature)
                         {
 
-                            // Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                            gput = computer.Hardware[i].Sensors[j].Value.ToString();
+                            Console.WriteLine("T:" + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
+                            gput = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
                         }
 
                         //GET CPU UTILIZATION
                         if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Load)
                         {
 
-                           // if (computer.Hardware[i].Sensors[j].Name == "GPU Core")
-                           // {
-                                //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                            gpuu = computer.Hardware[i].Sensors[j].Value.ToString();
+                            if (computer.Hardware[i].Sensors[j].Name == "GPU Core")
+                            {
+                                Console.WriteLine("U: " + computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
+                                gpuu = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
 
-                           // }
+                            }
                         }
                     }
                 }
+
             }
 
-            string packet_pre = cput + cpuu;
+            string packet_pre = cput + cpuu + gput + gpuu;
 
             computer.Close();
 

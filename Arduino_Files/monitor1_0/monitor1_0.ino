@@ -4,19 +4,20 @@
 #include <LiquidCrystal_I2C.h>
 #include <WiFiManager.h>
 
-
+//General Init of vars
 WiFiServer server(80);
 const int button = 16;
 WiFiUDP Udp;
 unsigned int localUdpPort = 6666;
 char incomingPacket[255];
-char replyPacket[] = "Hi i got your shit"; 
 long randNumber;
-int lcdColumns = 16;
-int lcdRows = 2;
+int lcdColumns = 20;
+int lcdRows = 4;
 
+//Iinit the LCD display
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 
+//This is I create the thermometer symbol.https://maxpromer.github.io/LCD-Character-Creator/ if you want an easy way to create custom symbols
 byte thermom[8] = 
 {
   B00100,
@@ -29,8 +30,29 @@ byte thermom[8] =
   B01110
 };
 
+byte degree[8] = {
+  B11100,
+  B10100,
+  B11100,
+  B00000,
+  B00111,
+  B00100,
+  B00100,
+  B00111
+};
+byte percent[8] = {
+  B11001,
+  B11011,
+  B00111,
+  B00110,
+  B01100,
+  B11100,
+  B11011,
+  B10011
+};
 
 
+//Function that will put the chip into wifi config mode if you either reset it or this is the first time the arduino is booted
 void configModeCallback(WiFiManager *myWifiManager) {
   lcd.clear();
   lcd.setCursor(0,0);
@@ -40,28 +62,37 @@ void configModeCallback(WiFiManager *myWifiManager) {
   Serial.println("CONFIGMODE");
 }
 
+
+//Setup Function
 void setup()
 {
-  
-  bool fresh_boot = false; 
+
+  //Configure the LCD display and then creates our custom symbols 
   lcd.init();
-  //lcd.begin(20,4);
+  lcd.begin(20,4);
   lcd.backlight();
   lcd.setCursor(0,0);
   lcd.clear();
-  lcd.createChar(1,thermom);
+  lcd.createChar(0,thermom);
+  lcd.createChar(1,degree);
 
 
-  
+  //Debug functions
   Serial.begin(115200);
   Serial.print("ON");
   Serial.println();
+
+  //Inits the button for resets
   pinMode(button, INPUT);
+  //Inits the wifiManager which allows us to connect the Arduino to an access point
   WiFiManager wifiManager;
+  //Displays text on the screen to instruct the user to press the button if they want to put the device into wifi configuration mode
   lcd.setCursor(0,0);
   lcd.print("Press button for");
   lcd.setCursor(0,1);
   lcd.print("Wifi setup");
+
+  //Loop that will wait for 8 seconds to see if the user presses the button to put it into wifi config mode
   for (int i = 0; i < 4; i++) {
     Serial.println(digitalRead(button));
     if (!digitalRead(button)){
@@ -71,6 +102,7 @@ void setup()
       lcd.setCursor(0,1);
       lcd.print("URL=192.168.4.1");
       Serial.println("BUTTON PRESSED");
+      //If the button is pressed then it will reset the saved wifi ssid and password information
       wifiManager.resetSettings();
   
       break;
@@ -78,8 +110,10 @@ void setup()
     delay(2000);
   }
   
-
-wifiManager.setAPCallback(configModeCallback);  
+//In this function the Wifimanager attempts to connect to the saved SSID and password, if there is no saved information
+//it will call the configModeCallback function to put it into Wifi config mode
+wifiManager.setAPCallback(configModeCallback); 
+//puts the device into wifi config mode with an ssid of PC Monitor 
 wifiManager.autoConnect("PC Monitor");
 
 
@@ -89,27 +123,26 @@ wifiManager.autoConnect("PC Monitor");
   lcd.setCursor(0,1);
   lcd.print("Wifi");
   delay(4000);
-  //WiFi.begin(ssid, pass);
-//  lcd.print("Conecting to: " + String(ssid));
-//  Serial.print("Connecting");
-//  while (WiFi.status() != WL_CONNECTED)
-//  {
-//    delay(500);
-//    Serial.print(".");
-//  }
-//  Serial.println();
-
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
   lcd.clear();
   Udp.begin(localUdpPort);
   Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), localUdpPort);
+  
+  //Init the base information for the LCD screen for CPU
   lcd.setCursor(0,0);
-  lcd.print("CPU T:    U:"); //char(252) is temperature symbol
-  //lcd.setCursor(6,0);
-  //lcd.write(byte(1));
+  lcd.print("CPU       U:   %");
+  lcd.setCursor(4,0);
+  lcd.print((char)0);
+  lcd.setCursor(8,0);
+  lcd.print((char)1);
+  //GPU Information Init
   lcd.setCursor(0,1);
-  lcd.print("GPU T:");
+  lcd.print("GPU       U:   %");
+  lcd.setCursor(4,1);
+  lcd.print((char)0);
+  lcd.setCursor(8,1);
+  lcd.print((char)1);
 }
 
 
@@ -134,17 +167,30 @@ void loop()
     
     String cput = String(incomingPacket[0]) + String(incomingPacket[1]) + String(incomingPacket[2]);
     String cpuu = String(incomingPacket[3]) + String(incomingPacket[4]) + String(incomingPacket[5]);
+    String gput = String(incomingPacket[6]) + String(incomingPacket[7]) + String(incomingPacket[8]);
+    String gpuu = String(incomingPacket[9]) + String(incomingPacket[10]) + String(incomingPacket[11]);
     Serial.println("CPUT: " + cput);
+    Serial.println("CPUU: " + cpuu);
+    Serial.println("GPUT: " + gput);
+    Serial.println("GPUU: " + gpuu);
     
     
     Serial.printf("UDP Packet Contents: %s\n", incomingPacket);
     Udp.beginPacket('10.0.0.255', '6666');
-    Udp.write(replyPacket);
+    //Udp.write(replyPacket);
     Udp.endPacket();
-    lcd.setCursor(6,0);
+    //Write CPU Info to the screen
+    lcd.setCursor(5,0);
     lcd.print(String(cput));
     lcd.setCursor(12,0);
     lcd.print(String(cpuu));
+    //Write GPU Info to the screen
+    lcd.setCursor(5,1);
+    lcd.print(String(gput));
+    lcd.setCursor(12,1);
+    lcd.print(String(gpuu));
+
+    
     Serial.printf("SENT PACKET");
   } 
   

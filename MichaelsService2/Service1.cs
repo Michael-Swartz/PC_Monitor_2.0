@@ -155,7 +155,7 @@ namespace MichaelsService2
                 }
             }
 
-            string packet_pre = "CPU: " + cput + ":" + cpuu + "GPU: " + gput + ":" + gpuu;
+            string packet_pre = cput + cpuu;
 
             computer.Close();
 

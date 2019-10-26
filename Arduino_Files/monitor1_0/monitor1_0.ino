@@ -58,10 +58,10 @@ void setup()
   Serial.println();
   pinMode(button, INPUT);
   WiFiManager wifiManager;
-  
+  lcd.setCursor(0,0);
   lcd.print("Press button for");
   lcd.setCursor(0,1);
-  lcd.print("Wifi mode");
+  lcd.print("Wifi setup");
   for (int i = 0; i < 4; i++) {
     Serial.println(digitalRead(button));
     if (!digitalRead(button)){
@@ -104,10 +104,10 @@ wifiManager.autoConnect("PC Monitor");
   lcd.clear();
   Udp.begin(localUdpPort);
   Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), localUdpPort);
-  //lcd.setCursor(0,0);
-  //lcd.print("CPU       U:"); //char(252) is temperature symbol
-  lcd.setCursor(6,0);
-  lcd.write(byte(1));
+  lcd.setCursor(0,0);
+  lcd.print("CPU T:    U:"); //char(252) is temperature symbol
+  //lcd.setCursor(6,0);
+  //lcd.write(byte(1));
   lcd.setCursor(0,1);
   lcd.print("GPU T:");
 }

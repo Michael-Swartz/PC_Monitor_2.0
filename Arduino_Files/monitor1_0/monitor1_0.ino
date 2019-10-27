@@ -146,7 +146,7 @@ wifiManager.autoConnect("PC Monitor");
   lcd.print((char)1);
   //Mem Information Init
   lcd.setCursor(0,2);
-  lcd.print("MEM    Gb/   Gb");
+  lcd.print("MEM     GB/   GB");
 
   
 }
@@ -175,6 +175,8 @@ void loop()
     String cpuu = String(incomingPacket[3]) + String(incomingPacket[4]) + String(incomingPacket[5]);
     String gput = String(incomingPacket[6]) + String(incomingPacket[7]) + String(incomingPacket[8]);
     String gpuu = String(incomingPacket[9]) + String(incomingPacket[10]) + String(incomingPacket[11]);
+    String used_mem = String(incomingPacket[12]) + String(incomingPacket[13]) + String(incomingPacket[14]);
+    String total_mem = String(incomingPacket[15]) + String(incomingPacket[16]) + String(incomingPacket[17]);
     Serial.println("CPUT: " + cput);
     Serial.println("CPUU: " + cpuu);
     Serial.println("GPUT: " + gput);
@@ -195,7 +197,11 @@ void loop()
     lcd.print(String(gput));
     lcd.setCursor(12,1);
     lcd.print(String(gpuu));
-
+    //Write RAM info to the screen
+    lcd.setCursor(5,2);
+    lcd.print(String(used_mem));
+    lcd.setCursor(11,2);
+    lcd.print(String(total_mem));
     
     Serial.printf("SENT PACKET");
   } 

@@ -94,12 +94,18 @@ namespace MichaelsService2
             Computer computer = new Computer();
             computer.Open();
             computer.CPUEnabled = true;
+            computer.RAMEnabled = true;
             computer.GPUEnabled = true;
             computer.Accept(updateVisitor);
             string cput = "0";
             string cpuu = "0";
             string gput = "0";
             string gpuu = "0";
+            float used_mem = 0;
+            float free_mem = 0;
+            string used_mem_string = "0";
+            string total_mem = "0";
+            double total_mem_pre_round = 0;
 
             // Old way below
             /**
@@ -127,7 +133,7 @@ namespace MichaelsService2
                             if (computer.Hardware[i].Sensors[j].Name == "CPU Total")
                             {
                                 //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                                cpuu = format_string(computer.Hardware[i].Sensors[j].Value.GetValueOrDefault());
+                                cpuu = format_string(computer.Hardware[i].Sensors[j].Value.GetValueOrDefault().ToString());
                             }                                            
                         }
                     }
@@ -159,9 +165,64 @@ namespace MichaelsService2
                     }
                 }
 
+                if (hardware.HardwareType == HardwareType.GpuNvidia)
+                {
+                    hardware.Update();
+                    foreach (var sensors in hardware.Sensors)
+                    {
+                        if (sensors.SensorType == SensorType.Load)
+                        {
+                            if (sensors.Name == "GPU Core")
+                            {
+                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                gpuu = sensors.Value.ToString();
+                            }
+
+                        }
+
+                        if (sensors.SensorType == SensorType.Temperature)
+                        {
+                            if (sensors.Name == "GPU Core")
+                            {
+                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                gput = sensors.Value.ToString();
+                            }
+                        }
+
+                    }
+                }
+
+                if (hardware.HardwareType == HardwareType.RAM)
+                {
+                    hardware.Update();
+                    foreach (var sensors in hardware.Sensors)
+                    {
+                        if (sensors.SensorType == SensorType.Data)
+                        {
+                            if (sensors.Name == "Used Memory")
+                            {
+                                Console.WriteLine(sensors.Name + ": " + Math.Round(sensors.Value.GetValueOrDefault(), 0));
+                                used_mem = sensors.Value.GetValueOrDefault();
+                            }
+
+                            if (sensors.Name == "Available Memory")
+                            {
+                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                free_mem = sensors.Value.GetValueOrDefault();
+                            }
+                        }
+                    }
+                }
+
+
+
+
+                //end of for loop
             }
             **/
 
+
+            //New 
             foreach (var hardware in computer.Hardware)
             {
                 if (hardware.HardwareType == HardwareType.CPU)
@@ -214,10 +275,73 @@ namespace MichaelsService2
                         }
                     }
                 }
+
+                if (hardware.HardwareType == HardwareType.GpuNvidia)
+                {
+                    hardware.Update();
+                    foreach (var sensors in hardware.Sensors)
+                    {
+                        if (sensors.SensorType == SensorType.Load)
+                        {
+                            if (sensors.Name == "GPU Core")
+                            {
+                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                gpuu = format_string(sensors.Value.ToString());
+                            }
+
+                        }
+
+                        if (sensors.SensorType == SensorType.Temperature)
+                        {
+                            if (sensors.Name == "GPU Core")
+                            {
+                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                gput = format_string(sensors.Value.ToString());
+                            }
+                        }
+
+                    }
+                }
+
+                if (hardware.HardwareType == HardwareType.RAM)
+                {
+                    hardware.Update();
+                    foreach (var sensors in hardware.Sensors)
+                    {
+                        if (sensors.SensorType == SensorType.Data)
+                        {
+                            if (sensors.Name == "Used Memory")
+                            {
+                                Console.WriteLine(sensors.Name + ": " + Math.Round(sensors.Value.GetValueOrDefault(), 0));
+                                used_mem = sensors.Value.GetValueOrDefault();
+                            }
+
+                            if (sensors.Name == "Available Memory")
+                            {
+                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
+                                free_mem = sensors.Value.GetValueOrDefault();
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+                //End of the the foreach loop
             }
 
+           
 
-            string packet_pre = cput + cpuu + gput + gpuu;
+            total_mem_pre_round = used_mem + free_mem;
+            total_mem = format_string(Math.Ceiling(total_mem_pre_round).ToString());
+            used_mem_string = format_string(Math.Round(used_mem,0).ToString());
+
+            string packet_pre = cput + cpuu + gput + gpuu + used_mem_string + total_mem;
 
             computer.Close();
 

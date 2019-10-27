@@ -170,7 +170,8 @@ namespace MichaelsService2
                     foreach (var sensors in hardware.Sensors)
                     {
                         if (sensors.SensorType == SensorType.Load)
-                        {
+                        {   
+
                             if (sensors.Name == "CPU Total")
                             {
                                 // Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());

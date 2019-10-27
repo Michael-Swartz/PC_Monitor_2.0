@@ -136,6 +136,7 @@ wifiManager.autoConnect("PC Monitor");
   lcd.print((char)0);
   lcd.setCursor(8,0);
   lcd.print((char)1);
+  
   //GPU Information Init
   lcd.setCursor(0,1);
   lcd.print("GPU       U:   %");
@@ -143,6 +144,11 @@ wifiManager.autoConnect("PC Monitor");
   lcd.print((char)0);
   lcd.setCursor(8,1);
   lcd.print((char)1);
+  //Mem Information Init
+  lcd.setCursor(0,2);
+  lcd.print("MEM    Gb/   Gb");
+
+  
 }
 
 

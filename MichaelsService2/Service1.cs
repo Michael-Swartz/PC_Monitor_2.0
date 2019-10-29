@@ -12,6 +12,7 @@ using System.Timers;
 using System.Net;
 using System.Net.Sockets;
 using OpenHardwareMonitor.Hardware;
+using System.Management;
 
 
 namespace MichaelsService2
@@ -234,9 +235,10 @@ namespace MichaelsService2
                         {   
 
                             if (sensors.Name == "CPU Total")
-                            {
+                            {   
+                                //Commented out for now as I am testing using WMI to get CPUU data
                                 // Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
-                                cpuu = format_string(sensors.Value.ToString());
+                                //cpuu = format_string(sensors.Value.ToString());
                             }
                         }
 
@@ -328,14 +330,33 @@ namespace MichaelsService2
 
 
 
-
+                    
 
 
 
                 //End of the the foreach loop
             }
 
-           
+            //CPUU WMI Query method
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
+
+                foreach (ManagementObject queryObj in searcher.Get())
+                {
+                    cpuu = format_string(queryObj["LoadPercentage"].ToString());
+                }
+            }
+            catch
+            {
+                //Send XXX out as a packet if there is an issue pulling the data
+                cpuu = "XXX";
+            }
+
+
+
+
+
 
             total_mem_pre_round = used_mem + free_mem;
             total_mem = format_string(Math.Ceiling(total_mem_pre_round).ToString());

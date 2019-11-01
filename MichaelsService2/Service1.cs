@@ -48,6 +48,7 @@ namespace MichaelsService2
             WriteToFile("Service is Started at " + DateTime.Now);
             
             timer.Elapsed += new ElapsedEventHandler(OnElapsedTime);
+            //Timer is set to 750ms 
             timer.Interval += 750;
             timer.Enabled = true;
         }
@@ -84,11 +85,21 @@ namespace MichaelsService2
             }
         }
 
+        //This is the function that is called at the end of the specified interval
         private void OnElapsedTime(object source, ElapsedEventArgs e)
         {
 
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            IPAddress broadcast = IPAddress.Parse("10.0.0.164");
+
+            /** Modify the following line to set it as either the IP of the monitor, or the brodcast address of 
+             *  your LAN  (EXAMPLE: If your LAN is 10.0.0.0/24 it is 10.0.0.255, if it is 192.168.1.0/24 it would be 192.168.1.255)
+            **/
+            string broadcast_address = "10.0.0.255";
+
+
+
+
+            IPAddress broadcast = IPAddress.Parse(broadcast_address);
 
 
             UpdateVisitor updateVisitor = new UpdateVisitor();
@@ -108,165 +119,42 @@ namespace MichaelsService2
             string total_mem = "0";
             double total_mem_pre_round = 0;
 
-            // Old way below
-            /**
-            for (int i = 0; i < computer.Hardware.Length; i++)
-            {
-                //GET CPU TEMP AND UTILIZATION 
-                if (computer.Hardware[i].HardwareType == HardwareType.CPU) ;
-                {
-                    for (int j = 0; j < computer.Hardware[i].Sensors.Length; j++)
-                    {
-                        //GET CPU TEMP
-                        if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Temperature)
-                        {
-                            if (computer.Hardware[i].Sensors[j].Name == "CPU Package")
-                            {
-                                //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + format_string(computer.Hardware[i].Sensors[j].Value.ToString()) + "\r");
-                                cput = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
-
-                            }
-                        }
-
-                        //GET CPU UTILIZATION
-                        if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Load)
-                        {
-                            if (computer.Hardware[i].Sensors[j].Name == "CPU Total")
-                            {
-                                //Console.WriteLine(computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                                cpuu = format_string(computer.Hardware[i].Sensors[j].Value.GetValueOrDefault().ToString());
-                            }                                            
-                        }
-                    }
-                }
-                //GET GPY TEMP AND UTILIZATION
-                if (computer.Hardware[i].HardwareType == HardwareType.GpuNvidia)
-                {
-                    for (int j = 0; j < computer.Hardware[i].Sensors.Length; j++)
-                    {
-                        //GET CPU TEMP
-                        if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Temperature)
-                        {
-
-                            Console.WriteLine("T:" + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                            gput = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
-                        }
-
-                        //GET CPU UTILIZATION
-                        if (computer.Hardware[i].Sensors[j].SensorType == SensorType.Load)
-                        {
-
-                            if (computer.Hardware[i].Sensors[j].Name == "GPU Core")
-                            {
-                                Console.WriteLine("U: " + computer.Hardware[i].Sensors[j].Name + ": " + computer.Hardware[i].Sensors[j].Value.ToString() + "\r");
-                                gpuu = format_string(computer.Hardware[i].Sensors[j].Value.ToString());
-
-                            }
-                        }
-                    }
-                }
-
-                if (hardware.HardwareType == HardwareType.GpuNvidia)
-                {
-                    hardware.Update();
-                    foreach (var sensors in hardware.Sensors)
-                    {
-                        if (sensors.SensorType == SensorType.Load)
-                        {
-                            if (sensors.Name == "GPU Core")
-                            {
-                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
-                                gpuu = sensors.Value.ToString();
-                            }
-
-                        }
-
-                        if (sensors.SensorType == SensorType.Temperature)
-                        {
-                            if (sensors.Name == "GPU Core")
-                            {
-                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
-                                gput = sensors.Value.ToString();
-                            }
-                        }
-
-                    }
-                }
-
-                if (hardware.HardwareType == HardwareType.RAM)
-                {
-                    hardware.Update();
-                    foreach (var sensors in hardware.Sensors)
-                    {
-                        if (sensors.SensorType == SensorType.Data)
-                        {
-                            if (sensors.Name == "Used Memory")
-                            {
-                                Console.WriteLine(sensors.Name + ": " + Math.Round(sensors.Value.GetValueOrDefault(), 0));
-                                used_mem = sensors.Value.GetValueOrDefault();
-                            }
-
-                            if (sensors.Name == "Available Memory")
-                            {
-                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
-                                free_mem = sensors.Value.GetValueOrDefault();
-                            }
-                        }
-                    }
-                }
-
-
-
-
-                //end of for loop
-            }
-            **/
-
-
-            //New 
             foreach (var hardware in computer.Hardware)
             {
+                //CPU Information 
                 if (hardware.HardwareType == HardwareType.CPU)
                 {
                     hardware.Update();
                     foreach (var sensors in hardware.Sensors)
                     {
-                        if (sensors.SensorType == SensorType.Load)
-                        {   
-
-                            if (sensors.Name == "CPU Total")
-                            {   
-                                //Commented out for now as I am testing using WMI to get CPUU data
-                                // Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
-                                //cpuu = format_string(sensors.Value.ToString());
-                            }
-                        }
-
+                        
+                        //Pull CPU Temperature Information 
                         if (sensors.SensorType == SensorType.Temperature)
                         {
                             if (sensors.Name == "CPU Package")
                             {
-                                // Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
                                 cput = format_string(sensors.Value.ToString());
                             }
                         }
                     }
                 }
 
+                //GPU Information
                 if (hardware.HardwareType == HardwareType.GpuNvidia)
                 {
                     hardware.Update();
                     foreach (var sensors in hardware.Sensors)
                     {
+                        //Pull GPU utilization information 
                         if (sensors.SensorType == SensorType.Load)
                         {
                             if (sensors.Name == "GPU Core")
                             {
-                                // Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
                                 gpuu = format_string(sensors.Value.ToString());
                             }
                         }
 
+                        //Pull GPU temperature infomration
                         if (sensors.SensorType == SensorType.Temperature)
                         {
                             if (sensors.Name == "GPU Core")
@@ -278,33 +166,7 @@ namespace MichaelsService2
                     }
                 }
 
-                if (hardware.HardwareType == HardwareType.GpuNvidia)
-                {
-                    hardware.Update();
-                    foreach (var sensors in hardware.Sensors)
-                    {
-                        if (sensors.SensorType == SensorType.Load)
-                        {
-                            if (sensors.Name == "GPU Core")
-                            {
-                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
-                                gpuu = format_string(sensors.Value.ToString());
-                            }
-
-                        }
-
-                        if (sensors.SensorType == SensorType.Temperature)
-                        {
-                            if (sensors.Name == "GPU Core")
-                            {
-                                Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
-                                gput = format_string(sensors.Value.ToString());
-                            }
-                        }
-
-                    }
-                }
-
+                //Pull memory information
                 if (hardware.HardwareType == HardwareType.RAM)
                 {
                     hardware.Update();
@@ -312,12 +174,14 @@ namespace MichaelsService2
                     {
                         if (sensors.SensorType == SensorType.Data)
                         {
+                            //Pulls used memory 
                             if (sensors.Name == "Used Memory")
                             {
                                 Console.WriteLine(sensors.Name + ": " + Math.Round(sensors.Value.GetValueOrDefault(), 0));
                                 used_mem = sensors.Value.GetValueOrDefault();
                             }
 
+                            //Pulls available memory
                             if (sensors.Name == "Available Memory")
                             {
                                 Console.WriteLine(sensors.Name + ": " + sensors.Value.ToString());
@@ -328,16 +192,10 @@ namespace MichaelsService2
                 }
 
 
-
-
-                    
-
-
-
                 //End of the the foreach loop
             }
 
-            //CPUU WMI Query method
+            //CPU utilization WMI query
             try
             {
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
@@ -357,36 +215,29 @@ namespace MichaelsService2
 
 
 
-
+            //Find the total amount of memory
             total_mem_pre_round = used_mem + free_mem;
             total_mem = format_string(Math.Ceiling(total_mem_pre_round).ToString());
             used_mem_string = format_string(Math.Round(used_mem,0).ToString());
 
+            //Create the string to send in the UDP packet
             string packet_pre = cput + cpuu + gput + gpuu + used_mem_string + total_mem;
 
             computer.Close();
 
+            //Networky packety stuffz
             string packet_data = packet_pre;
             byte[] sendbuff = Encoding.ASCII.GetBytes(packet_data);
             IPEndPoint ep = new IPEndPoint(broadcast, 6666);
             s.SendTo(sendbuff, ep);
-            //Random rnd = new Random();
-            //int num = rnd.Next();
-            // WriteToFile("Sent packet " + packet_data);
-            //string packet_data = GetRandomNumber(0, 234957675).ToString();
+
+
 
         }
-        private static readonly Random getrandom = new Random();
-
-        public static int GetRandomNumber(int min, int max)
-        {
-            lock (getrandom)
-            {
-                return getrandom.Next(min, max);
-            }
-        }
 
 
+
+        //Write to logs to check it is working
         public void WriteToFile(string Message)
         {
             string path = AppDomain.CurrentDomain.BaseDirectory + "\\Logs";

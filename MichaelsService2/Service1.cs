@@ -94,7 +94,7 @@ namespace MichaelsService2
             /** Modify the following line to set it as either the IP of the monitor, or the brodcast address of 
              *  your LAN  (EXAMPLE: If your LAN is 10.0.0.0/24 it is 10.0.0.255, if it is 192.168.1.0/24 it would be 192.168.1.255)
             **/
-            string broadcast_address = "10.0.0.255";
+            string broadcast_address = "192.168.1.255";
 
 
 
@@ -215,7 +215,7 @@ namespace MichaelsService2
 
 
 
-            //Find the total amount of memory
+            //Find the total amount   of memory
             total_mem_pre_round = used_mem + free_mem;
             total_mem = format_string(Math.Ceiling(total_mem_pre_round).ToString());
             used_mem_string = format_string(Math.Round(used_mem,0).ToString());
